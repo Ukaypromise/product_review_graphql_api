@@ -40,3 +40,8 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
   gem "rspec-rails", "~> 7.0"
 end
+gem "graphql"
+
+gem "graphiql-rails", "~> 1.10"
+
+gem "sprockets-rails", "~> 3.5"
