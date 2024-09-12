@@ -10,8 +10,8 @@ module Types
       context.schema.object_from_id(id, context)
     end
 
-    field :nodes, [Types::NodeType, null: true], null: true, description: "Fetches a list of objects given a list of IDs." do
-      argument :ids, [ID], required: true, description: "IDs of the objects."
+    field :nodes, [ Types::NodeType, null: true ], null: true, description: "Fetches a list of objects given a list of IDs." do
+      argument :ids, [ ID ], required: true, description: "IDs of the objects."
     end
 
     def nodes(ids:)
@@ -25,6 +25,27 @@ module Types
     field :test_field, String, null: false, description: "An example field added by the generator"
     def test_field
       "Hello GraphQL World!"
+    end
+
+    field :products, [ ProductType ], null: false, description: "Retrieve a list of all the products"
+
+
+    def products
+      Product.all
+    end
+
+    field :product, ProductType, null: false do
+      argument :id, ID, required: true
+    end
+
+    def product(id:)
+      Product.find(id)
+    end
+
+    field :product_count, Integer, null: false, description: "Total number of products"
+
+    def product_count
+      Product.count
     end
   end
 end
