@@ -62,4 +62,25 @@ RSpec.describe "GraphQL Product Mutation" do
       )
     end
   end
+
+  describe "Delete Product" do
+    it "should delete a product" do
+      mutation = <<~MUTATION
+        mutation($input: ProductDeleteInput!){
+          productDelete(input: $input){
+            message
+          }
+        }
+      MUTATION
+
+      product_params = {
+        id: product.id.to_s
+      }
+
+      post "/graphql", params: { query: mutation, variables: { input: product_params } }
+      expect(response.parsed_body["errors"]).to be_blank
+      expect(response.parsed_body["data"]["productDelete"]["message"]).to eq("Product deleted successfully")
+      expect(Product.find_by(id: product.id)).to be_nil
+    end
+  end
 end

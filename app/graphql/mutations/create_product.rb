@@ -2,6 +2,7 @@
 
 module Mutations
   class CreateProduct < BaseMutation
+    description "Create a Product"
     field :product, Types::ProductType, null: false
     field :errors, [ String ], null: false
 
