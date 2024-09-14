@@ -15,6 +15,7 @@ module Mutations
 
       if user && user.authenticate(credentials[:password])
         token = JsonWebToken.encode(user_id: user.id)
+        context[:session][:token] = token
         { user: user, token: token }
       else
         raise GraphQL::ExecutionError.new("invalid email or password")
