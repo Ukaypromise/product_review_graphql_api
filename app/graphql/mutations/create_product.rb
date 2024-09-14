@@ -10,7 +10,7 @@ module Mutations
     argument :url, String, required: true
 
     def resolve(name:, url:)
-      product = Product.new(name: name, url: url)
+      product = Product.new(name: name, url: url, user: context[:current_user])
 
       if product.save
         { product: product, errors: [] }
