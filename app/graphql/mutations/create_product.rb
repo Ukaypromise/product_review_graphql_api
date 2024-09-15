@@ -5,6 +5,7 @@ module Mutations
     description "Create a Product"
     field :product, Types::ProductType, null: false
     field :errors, [ String ], null: false
+    field :review_requested_by, Types::UserType, null: true, method: :user
 
     argument :name, String, required: true
     argument :url, String, required: true
