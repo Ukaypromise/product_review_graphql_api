@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe "GraphQL Comment Mutation", type: :request do
   let!(:user) { create(:user, email: "beca@gmail.com", password: "123456") }
   let!(:product) { create(:product, user_id: user.id) }
+  let!(:comment) { create(:comment, body: "Initial comment", product: product, user: user) }
 
   describe "Create a Comment" do
     it "should create a new comment and increases the count by 1" do
@@ -58,6 +59,56 @@ RSpec.describe "GraphQL Comment Mutation", type: :request do
           "url" => product.url
         }
       )
+    end
+  end
+
+  describe "Update a comment" do
+    it "should update a coment body" do
+      mutation = <<~MUTATION
+        mutation($input: CommentUpdateInput!) {
+          commentUpdate(input: $input){
+            comment{
+            id
+            body
+          }
+          }
+        }
+      MUTATION
+
+      update_params = {
+        id: comment.id,
+        body: "Updated comment"
+      }
+
+      post "/graphql", params: { query: mutation, variables: { input: update_params } }
+      response_data = JSON.parse(response.body)
+      expect(response_data["data"]["commentUpdate"]["comment"]["body"]).to eq(
+        "Updated comment"
+      )
+    end
+  end
+
+  describe "Delete a comment" do
+    it "should delete a comment" do
+      mutation = <<~MUTATION
+        mutation($input: CommentDeleteInput!) {
+          commentDelete(input: $input){
+            success
+            errors
+          }
+        }
+      MUTATION
+
+      delete_params = {
+        id: comment.id
+      }
+
+      expect {
+        post "/graphql", params: { query: mutation, variables: { input: delete_params } }
+    }.to change { Comment.count }.by(-1)
+
+    response_date = JSON.parse(response.body)
+    expect(response_date["data"]["commentDelete"]["success"]).to be(true)
     end
   end
 end

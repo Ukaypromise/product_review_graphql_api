@@ -3,7 +3,7 @@
 module Mutations
   class CreateProduct < BaseMutation
     description "Create a Product"
-    field :product, Types::ProductType, null: false
+    field :product, Types::ProductType, null: true
     field :errors, [ String ], null: false
     field :review_requested_by, Types::UserType, null: true, method: :user
 
@@ -18,6 +18,8 @@ module Mutations
       else
         { product: nil, errors: product.errors.full_messages }
       end
+    rescue ActiveRecord::RecordInvalid => e
+      raise GraphQL::ExecutionError.new("Invalid input: #{e.errors.full_messages.join(', ')}")
     end
   end
 end

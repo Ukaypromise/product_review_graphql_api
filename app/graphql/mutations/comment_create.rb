@@ -4,7 +4,7 @@ module Mutations
   class CommentCreate < BaseMutation
     description "Creates a new comment"
 
-    field :comment, Types::CommentType, null: false
+    field :comment, Types::CommentType, null: true
     field :errors, [ String ], null: false
 
     argument :body, String, required: true
@@ -24,8 +24,11 @@ module Mutations
       if comment.save
         { comment: comment, errors: [] }
       else
-      raise GraphQL::ExecutionError.new "Error creating comment", extensions: comment.errors.to_hash
+      { comment: nil, errors: comment.errors.full_messages}
       end
+
+    rescue ActiveRecord::RecordInvalid => e
+      raise GraphQL::ExecutionError.new("Invalid input: #{e.errors.full_messages.join(', ')}")
     end
   end
 end
