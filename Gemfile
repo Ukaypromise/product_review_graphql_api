@@ -50,3 +50,9 @@ gem "sprockets-rails", "~> 3.5"
 gem "faker"
 
 gem "jwt"
+
+gem "search_object_graphql"
+
+gem "graphql-pagination"
+
+gem "kaminari-activerecord"

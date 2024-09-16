@@ -47,5 +47,16 @@ module Types
     def product_count
       Product.count
     end
+
+    field :search_products, resolver: Resolvers::ProductsSearch
+
+    field :all_products, Types::ProductType.collection_type, null: true do
+      argument :page, Integer, required: false
+      argument :limit, Integer, required: false
+    end
+
+    def all_products(page: nil, limit: nil)
+      ::Product.page(page).per(limit)
+    end
   end
 end
