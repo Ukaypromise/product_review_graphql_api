@@ -14,7 +14,12 @@ class GraphqlController < ApplicationController
       session: session,
       current_user: current_user
     }
+    start_time = Time.now
     result = ProductReviewSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
+    end_time = Time.now
+    logger.info("GraphQL Query: #{query}")
+    logger.info("Execution Time: #{(end_time - start_time) * 1000} ms")
+    logger.info("Result: #{result.to_json}")
     render json: result
   rescue StandardError => e
     raise e unless Rails.env.development?
